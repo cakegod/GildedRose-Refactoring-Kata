@@ -55,7 +55,7 @@ export class GildedRose {
 
   private increaseQuality(item: Item, quality = 1) {
     if (item.quality < 50) {
-      item.quality = item.quality + 1
+      item.quality += quality
     }
   }
 
