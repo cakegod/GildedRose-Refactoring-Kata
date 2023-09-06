@@ -3,7 +3,7 @@ export class Item {
   sellIn: number;
   quality: number;
 
-  constructor(name, sellIn, quality) {
+  constructor(name: string, sellIn: number, quality: number) {
     this.name = name;
     this.sellIn = sellIn;
     this.quality = quality;
@@ -18,62 +18,166 @@ export class GildedRose {
   }
 
   updateQuality() {
-    this.items.forEach(item => {
-      if (item.name === 'Sulfuras, Hand of Ragnaros') return
-
-      if (item.name === 'Aged Brie') {
-        this.increaseQuality(item);
-        item.sellIn = item.sellIn - 1;
-
-        if (item.sellIn < 0) {
-          this.increaseQuality(item);
-        }
-        return
-      }
-
-      if (item.name === 'Backstage passes to a TAFKAL80ETC concert') {
-        this.increaseQuality(item);
-        if (item.sellIn < 11) {
-          this.increaseQuality(item);
-        }
-        if (item.sellIn < 6) {
-          this.increaseQuality(item);
-        }
-
-        item.sellIn = item.sellIn - 1;
-
-        if (item.sellIn < 0) {
-          item.quality = item.quality - item.quality
-        }
-        return
-      }
-
-
-      this.decreaseQuality(item);
-
-      item.sellIn = item.sellIn - 1;
-
-      if (item.sellIn < 0) {
-        if (item.name === 'Backstage passes to a TAFKAL80ETC concert') {
-          item.quality = item.quality - item.quality
-        } else {
-          this.decreaseQuality(item);
-        }
+    this.items = this.items.map(item => {
+      switch (item.name) {
+        case 'Sulfuras, Hand of Ragnaros':
+          return new Sulfuras(item).update()
+        case 'Aged Brie':
+          return new AgedBrie(item).update()
+        case 'Backstage passes to a TAFKAL80ETC concert':
+          return new Backseat(item).update()
+        case 'Conjured Mana Cake':
+          return new Conjured(item).update()
+        default:
+          return new Regular(item).update()
       }
     });
 
-    return this.items;
+    return this.items
   }
 
-  private increaseQuality(item: Item, quality = 1) {
-    if (item.quality < 50) {
-      item.quality += quality
-    }
+}
+
+class Sulfuras {
+  name: string;
+  quality: number;
+  sellIn: number
+
+  constructor({name, quality, sellIn}: Item) {
+    this.name = name;
+    this.quality = quality;
+    this.sellIn = sellIn;
   }
 
-  private decreaseQuality(item: Item, quantity = 1) {
-    if (item.quality > 0) {
-      item.quality -= quantity
-    }
+  update() {
+    return this
   }
 }
+
+class AgedBrie {
+  name: string;
+  quality: number;
+  sellIn: number
+
+  constructor({name, quality, sellIn}: Item) {
+    this.name = name;
+    this.quality = quality < 50 ? quality : 50
+    this.sellIn = sellIn;
+  }
+
+  increaseQuality(quantity = 1) {
+    if (this.quality < 50) {
+      this.quality += quantity
+    }
+  }
+
+  update() {
+    this.increaseQuality();
+
+    this.sellIn = this.sellIn - 1;
+
+    if (this.sellIn < 0) {
+      this.increaseQuality();
+    }
+
+    return this
+  }
+}
+
+class Backseat {
+  name: string;
+  quality: number;
+  sellIn: number
+
+  constructor({name, quality, sellIn}: Item) {
+    this.name = name;
+    this.quality = quality < 50 ? quality : 50
+    this.sellIn = sellIn;
+  }
+
+  increaseQuality(quantity = 1) {
+    if (this.quality < 50) {
+      this.quality += quantity
+    }
+  }
+
+  update() {
+    this.increaseQuality();
+    if (this.sellIn <= 10) {
+      this.increaseQuality();
+    }
+    if (this.sellIn <= 5) {
+      this.increaseQuality();
+    }
+
+    this.sellIn = this.sellIn - 1;
+
+    if (this.sellIn < 0) {
+      this.quality = 0
+    }
+    return this
+  }
+}
+
+class Regular {
+  name: string;
+  quality: number;
+  sellIn: number
+
+  constructor({name, quality, sellIn}: Item) {
+    this.name = name;
+    this.quality = quality < 50 ? quality : 50
+    this.sellIn = sellIn;
+  }
+
+  decreaseQuality(quantity = 1) {
+    if (this.quality > 0) {
+      this.quality -= quantity
+    }
+  }
+
+  update() {
+
+    this.decreaseQuality();
+
+    this.sellIn = this.sellIn - 1;
+
+    if (this.sellIn < 0) {
+      this.decreaseQuality();
+    }
+
+    return this
+  }
+}
+
+class Conjured {
+  name: string;
+  quality: number;
+  sellIn: number
+
+  constructor({name, quality, sellIn}: Item) {
+    this.name = name;
+    this.quality = quality < 50 ? quality : 50
+    this.sellIn = sellIn;
+  }
+
+  decreaseQuality(quantity = 1) {
+    if (this.quality > 0) {
+      this.quality -= quantity
+    }
+  }
+
+  update() {
+
+    this.decreaseQuality(2);
+
+    this.sellIn = this.sellIn - 1;
+
+    if (this.sellIn < 0) {
+      this.decreaseQuality(2);
+    }
+
+    return this
+  }
+}
+
