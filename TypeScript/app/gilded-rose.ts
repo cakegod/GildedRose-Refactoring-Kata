@@ -40,12 +40,10 @@ export class GildedRose {
       if (item.sellIn < 0) {
         if (item.name === 'Aged Brie') {
           this.increaseQuality(item);
+        } else if (item.name === 'Backstage passes to a TAFKAL80ETC concert') {
+          item.quality = item.quality - item.quality
         } else {
-          if (item.name === 'Backstage passes to a TAFKAL80ETC concert') {
-            item.quality = item.quality - item.quality
-          } else {
-            this.decreaseQuality(item);
-          }
+          this.decreaseQuality(item);
         }
       }
     });
