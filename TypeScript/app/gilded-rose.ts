@@ -23,21 +23,18 @@ export class GildedRose {
       if (item.name != 'Aged Brie' && item.name != 'Backstage passes to a TAFKAL80ETC concert') {
         this.decreaseQuality(item);
       } else {
-        if (item.quality < 50) {
-          item.quality = item.quality + 1
-          if (item.name == 'Backstage passes to a TAFKAL80ETC concert') {
-            if (item.sellIn < 11) {
-              if (item.quality < 50) {
-                item.quality = item.quality + 1
-              }
-            }
-            if (item.sellIn < 6) {
-              if (item.quality < 50) {
-                item.quality = item.quality + 1
-              }
-            }
+        this.increaseQuality(item);
+        if (item.name == 'Backstage passes to a TAFKAL80ETC concert') {
+          if (item.sellIn < 11) {
+            this.increaseQuality(item);
+
+          }
+          if (item.sellIn < 6) {
+            this.increaseQuality(item);
+
           }
         }
+
       }
       item.sellIn = item.sellIn - 1;
       if (item.sellIn < 0) {
@@ -48,14 +45,18 @@ export class GildedRose {
             item.quality = item.quality - item.quality
           }
         } else {
-          if (item.quality < 50) {
-            item.quality = item.quality + 1
-          }
+          this.increaseQuality(item);
         }
       }
     });
 
     return this.items;
+  }
+
+  private increaseQuality(item: Item, quality = 1) {
+    if (item.quality < 50) {
+      item.quality = item.quality + 1
+    }
   }
 
   private decreaseQuality(item: Item, quantity = 1) {
