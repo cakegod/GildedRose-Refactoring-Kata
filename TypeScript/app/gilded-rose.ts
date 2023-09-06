@@ -39,9 +39,17 @@ export class GildedRose {
         if (item.sellIn < 6) {
           this.increaseQuality(item);
         }
-      } else {
-        this.decreaseQuality(item);
+
+        item.sellIn = item.sellIn - 1;
+
+        if (item.sellIn < 0) {
+          item.quality = item.quality - item.quality
+        }
+        return
       }
+
+
+      this.decreaseQuality(item);
 
       item.sellIn = item.sellIn - 1;
 
